@@ -86,10 +86,16 @@
                 credits: { enabled: false }
             });
 
-            function updateChart() {
+            async function updateChart() {
                 let x = (new Date()).getTime();
-                let y = Math.floor(Math.random() * 10) + 1;
-                chart.series[0].addPoint([x, y], true, chart.series[0].data.length > 20);
+                try {
+                    let response = await fetch('/api/hit');
+                    let data = await response.json();
+                    let y = data.requests || 0;
+                    chart.series[0].addPoint([x, y], true, chart.series[0].data.length > 20);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
             }
 
             setInterval(updateChart, 1000);
