@@ -1,6 +1,8 @@
-let totalRequests = 0;
+import { Redis } from "ioredis";
 
-export default function handler(req, res) {
-    totalRequests++;
+const redis = new Redis(process.env.UPSTASH_REDIS_URL);
+
+export default async function handler(req, res) {
+    let totalRequests = await redis.incr("request_count");
     res.status(200).json({ requests: totalRequests });
 }
